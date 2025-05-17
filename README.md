@@ -1,26 +1,44 @@
 # GamersUnivers Auto Bot + Dashboard
 
-Automatically registers accounts on https://gamersunivers.com using your referral link.
+يقوم هذا المشروع بتسجيل حسابات تلقائية على موقع [GamersUnivers](https://gamersunivers.com) باستخدام رابط الإحالة الخاص بك، ويحتوي على لوحة تحكم لمراقبة الأداء والإحصائيات.
 
 ---
 
-## ✅ Features:
-- Registers new account every 30 seconds
-- Solves VisualCaptcha randomly
-- Tracks success, failure, and captcha patterns
-- Flask dashboard for real-time monitoring
+## ✅ الميزات
+
+- تسجيل حساب جديد كل 30 ثانية تلقائيًا
+- محاولة حل كابتشا VisualCaptcha بالذكاء العشوائي
+- حفظ الكابتشات الناجحة والفاشلة لتحسين الأداء مستقبلاً
+- تتبع:
+  - عدد التسجيلات الناجحة
+  - عدد الفاشلة
+  - آخر بريد مُستخدم
+  - نوع الكابتشا
+
+- لوحة تحكم Flask لعرض كل ذلك في الوقت الحقيقي
 
 ---
 
-## 🛠 Setup
+## ⚙️ النشر على Render
 
-1. Upload to GitHub
-2. Click button below:
+اضغط الزر أدناه لنشر المشروع مباشرة:
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/karim362/Zxzxzx12332112332112332558568)
 
 ---
 
-## 📂 Services:
-- `referral-bot`: Background Worker
-- `dashboard`: Flask Web Panel on port 10000
+## 📂 الخدمات المُنشأة تلقائيًا:
+
+| الخدمة          | النوع              | الوظيفة                           |
+|------------------|--------------------|-----------------------------------|
+| `referral-bot`   | Worker (خلفية)     | تسجيل الحسابات باستمرار          |
+| `dashboard`      | Web (لوحة تحكم)    | عرض النتائج في متصفح الويب       |
+
+---
+
+## 🧪 خطوات التجربة محليًا (اختياري)
+
+```bash
+pip install -r requirements.txt
+python referral_bot.py      # لتشغيل البوت
+python dashboard.py         # لتشغيل لوحة المراقبة على http://localhost:10000
