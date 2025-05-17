@@ -1,21 +1,16 @@
 services:
   - type: web
-    name: dashboard # ستحتوي هذه الخدمة الآن على لوحة التحكم وقدرة بدء البوت
+    name: dashboard
     env: python
     plan: free
-    # قم بتغيير هذا إذا كنت تستخدم Gunicorn أو Waitress
     buildCommand: pip install -r requirements.txt
-    # قم بتغيير هذا إذا كنت تستخدم Gunicorn أو Waitress (مثال Gunicorn: gunicorn --bind 0.0.0.0:$PORT dashboard:app)
     startCommand: python dashboard.py
-    # المنفذ الذي يتوقعه Render، ويجب أن يتطابق مع ما يستمع إليه تطبيق Flask
-    # تم ضبط كود Flask للاستماع إلى المنفذ من متغير البيئة PORT
-    port: 10000 # المنفذ الافتراضي للوحة التحكم، يمكن تغيير كود Flask ليستخدم $PORT مباشرة
-    # أضف متغيرات البيئة هنا
+    port: 10000
     envVars:
       - key: REFERRAL_URL
-        value: https://gamersunivers.com/default.aspx?u=1206990 # ضع رابط الإحالة الخاص بك هنا
-      - key: PORT # Render يضيف هذا تلقائيا، ولكن من الجيد تعريفه
-        value: 10000 # يجب أن يتطابق مع المنفذ أعلاه وكود Flask
-      # - key: NAVIGATION_TIMEOUT # اختياري: إذا أردت تغيير المهلة من هنا
+        value: https://gamersunivers.com/default.aspx?u=1206990
+      - key: PORT
+        value: 10000
+      # - key: NAVIGATION_TIMEOUT
       #   value: 60000
 
