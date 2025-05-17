@@ -1,15 +1,43 @@
 services:
+  # ==================================================
+  # تعريف خدمة الويب (Web Service) للوحة التحكم
+  # ==================================================
   - type: web
-    name: dashboard
+    name: dashboard # اسم خدمة الويب
     env: python
     plan: free
+    # أمر البناء: تثبيت المتطلبات
     buildCommand: pip install -r requirements.txt
+    # أمر بدء تشغيل التطبيق (استخدم هذا أو Gunicorn في الإنتاج)
     startCommand: python dashboard.py
-    # تم إزالة سطر port: 10000 هنا - وهذا هو ما حل مشكلة التحليل
+    # تم إزالة سطر port: 10000 هنا لأن استخدامه سبب مشكلة سابقة
+    # Render سيتعرف على المنفذ الذي تستمع إليه لوحة التحكم عبر متغير البيئة PORT
     envVars:
+      # المنفذ الذي يجب أن يستمع إليه تطبيق Flask (Render سيعينه تلقائياً)
+      - key: PORT
+        value: 10000 # تأكد أن كود لوحة التحكم يستمع إلى هذا المنفذ أو يستخدم os.environ.get("PORT")
+      # أضف هنا أي متغيرات بيئة أخرى تحتاجها لوحة التحكم
+
+
+  # ==================================================
+  # تعريف خدمة العامل (Worker Service) لتشغيل البوت
+  # ==================================================
+  - type: worker
+    name: referral-bot # اسم خدمة العامل
+    env: python
+    plan: free # يمكن تغيير الخطة حسب حاجتك للتشغيل المستمر
+    # أمر البناء: تثبيت المتطلبات
+    buildCommand: pip install -r requirements.txt
+    # أمر بدء تشغيل البوت (سيقوم بتشغيل الحلقة الرئيسية للبوت)
+    startCommand: python referral_bot.py
+    # خدمات العامل لا تحتاج عادةً لتعريف منفذ مفتوح
+
+    envVars:
+      # رابط الإحالة الذي سيستخدمه البوت
       - key: REFERRAL_URL
-        value: https://gamersunivers.com/default.aspx?u=1206990
-      - key: PORT # Render يضيف هذا تلقائيا، ونؤكد تعيينه
-        value: 10000
+        value: https://gamersunivers.com/default.aspx?u=1206990 # >>> ضع رابط الإحالة الخاص بك هنا <<<
+      # متغيرات بيئة أخرى يحتاجها البوت (مثل مهلة التنقل إذا أردت تغييرها من هنا)
       # - key: NAVIGATION_TIMEOUT
       #   value: 60000
+
+
