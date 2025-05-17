@@ -1,32 +1,15 @@
 services:
-  # تعريف خدمة الويب للوحة التحكم
   - type: web
-    name: dashboard # اسم خدمة الويب
+    name: dashboard
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    # أمر بدء تشغيل لوحة التحكم (قد تحتاجه لـ Gunicorn في الإنتاج)
     startCommand: python dashboard.py
-    port: 10000 # المنفذ الذي تستمع إليه لوحة التحكم
+    # تم إزالة سطر port: 10000 هنا - وهذا هو ما حل مشكلة التحليل
     envVars:
-      - key: PORT # Render يضيف هذا، نؤكد تعيينه للمنفذ المطلوب
-        value: 10000
-
-  # تعريف خدمة العامل لتشغيل البوت
-  - type: worker
-    name: referral-bot # اسم خدمة العامل
-    env: python
-    plan: free # أو خطة أخرى حسب الحاجة
-    buildCommand: pip install -r requirements.txt
-    # أمر بدء تشغيل البوت (سيقوم بتشغيل الحلقة الرئيسية تلقائياً)
-    startCommand: python referral_bot.py
-    # لا تحتاج خدمة العامل عادةً لمنفذ مفتوح ما لم تكن تستضيف واجهة معينة
-    # port: 10000 # ازل هذا السطر لخدمة العامل إذا لم تكن بحاجة لمنفذ
-
-    envVars:
-      # رابط الإحالة الذي سيستخدمه البوت
       - key: REFERRAL_URL
-        value: https://gamersunivers.com/default.aspx?u=1206990 # ضع رابط الإحالة الخاص بك هنا
-      # - key: NAVIGATION_TIMEOUT # اختياري: إذا أردت تغيير المهلة من هنا
+        value: https://gamersunivers.com/default.aspx?u=1206990
+      - key: PORT # Render يضيف هذا تلقائيا، ونؤكد تعيينه
+        value: 10000
+      # - key: NAVIGATION_TIMEOUT
       #   value: 60000
-
