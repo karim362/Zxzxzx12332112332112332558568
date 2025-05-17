@@ -46,11 +46,18 @@
       background-color: #4caf50;
       color: white;
       cursor: pointer;
+      transition: background-color 0.3s ease; /* تأثير عند التحويم */
     }
 
     button:hover {
       background-color: #388e3c;
     }
+
+    button:disabled {
+      background-color: #cccccc; /* لون رمادي عند التعطيل */
+      cursor: not-allowed;
+    }
+
 
     .status-text {
       margin-top: 20px;
@@ -80,23 +87,55 @@
       {% for k, v in stats.captchas.items() %}
         <li>{{ k }}: {{ v }} مرة</li>
       {% endfor %}
+      {% if not stats.captchas %}
+        <li>لا توجد بيانات كابتشا بعد.</li>
+      {% endif %}
     </ul>
 
-    <button onclick="triggerBot()">تشغيل البوت الآن</button>
-    <div class="status-text" id="statusText">الحالة: في وضع الانتظار</div>
+    <button id="startButton" onclick="triggerBot()">تشغيل البوت الآن</button>
+    <div class="status-text" id="statusText">الحالة: {{ bot_status }}</div>
   </div>
 
   <script>
+    const startButton = document.getElementById("startButton");
+    const statusText = document.getElementById("statusText");
+
+    // قد ترغب في تحديث حالة الزر عند تحميل الصفحة بناءً على bot_status
+    if (statusText.innerText.includes("قيد التشغيل")) {
+        startButton.disabled = true;
+    }
+
+
     async function triggerBot() {
-      const statusEl = document.getElementById("statusText");
-      statusEl.innerText = "جاري تشغيل البوت...";
+      startButton.disabled = true; // تعطيل الزر لمنع النقر المتعدد
+      statusText.innerText = "الحالة: جاري إرسال طلب التشغيل...";
+
       try {
         const res = await fetch('/start-bot', { method: 'POST' });
         const data = await res.json();
-        statusEl.innerText = `تم التشغيل: ${data.status || 'نجاح'}`;
+
+        if (res.status === 409) { // إذا كان البوت قيد التشغيل بالفعل (الكود الجديد يرسل 409)
+             statusText.innerText = `الحالة: ${data.status}`;
+             startButton.disabled = false; // إعادة تمكين الزر للسماح بالمحاولة مرة أخرى إذا لزم الأمر
+        } else if (res.ok) { // إذا كان الطلب ناجحاً (200 OK)
+            statusText.innerText = `الحالة: ${data.status}`;
+            // هنا يجب أن يبقى الزر معطلاً لأن البوت بدأ في الخلفية
+            // ولكن بما أن الحالة لا يتم تحديثها تلقائياً، يمكن إعادة تمكينه بحذر
+            // أو تنفيذ تحديث دوري للحالة
+             // لتبسيط الأمور حالياً، سنفترض أن البوت بدأ وسيتم تحديث الحالة يدوياً لاحقاً أو عند إعادة تحميل الصفحة
+            // startButton.disabled = false; // قد تحتاج لإعادة تمكين الزر هنا حسب رغبتك في كيفية التعامل مع الحالة
+        }
+         else { // أي خطأ آخر (مثل 500 Internal Server Error)
+            statusText.innerText = `الحالة: فشل - ${data.status || 'خطأ غير معروف'}`;
+            startButton.disabled = false; // إعادة تمكين الزر بعد الفشل
+        }
+
       } catch (err) {
-        statusEl.innerText = "فشل الاتصال بالخادم.";
+        statusText.innerText = "الحالة: فشل الاتصال بالخادم.";
+        startButton.disabled = false; // إعادة تمكين الزر بعد الفشل
       }
+      // ملاحظة: لوحة التحكم لا تحدث نفسها تلقائياً. ستحتاج لإعادة تحميل الصفحة
+      // لرؤية الإحصائيات المحدثة إلا إذا أضفت كود تحديث بالـ JavaScript.
     }
   </script>
 </body>
