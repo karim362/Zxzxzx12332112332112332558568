@@ -5,12 +5,11 @@ services:
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python dashboard.py
-    port: 10000
+    # تم إزالة سطر port: 10000 هنا
     envVars:
       - key: REFERRAL_URL
         value: https://gamersunivers.com/default.aspx?u=1206990
-      - key: PORT
+      - key: PORT # يجب أن يكون هذا المتغير موجوداً وكود Flask يستمع إليه
         value: 10000
       # - key: NAVIGATION_TIMEOUT
       #   value: 60000
-
