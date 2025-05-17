@@ -1,15 +1,32 @@
 services:
+  # تعريف خدمة الويب للوحة التحكم
   - type: web
-    name: dashboard
+    name: dashboard # اسم خدمة الويب
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
+    # أمر بدء تشغيل لوحة التحكم (قد تحتاجه لـ Gunicorn في الإنتاج)
     startCommand: python dashboard.py
-    # تم إزالة سطر port: 10000 هنا
+    port: 10000 # المنفذ الذي تستمع إليه لوحة التحكم
     envVars:
-      - key: REFERRAL_URL
-        value: https://gamersunivers.com/default.aspx?u=1206990
-      - key: PORT # يجب أن يكون هذا المتغير موجوداً وكود Flask يستمع إليه
+      - key: PORT # Render يضيف هذا، نؤكد تعيينه للمنفذ المطلوب
         value: 10000
-      # - key: NAVIGATION_TIMEOUT
+
+  # تعريف خدمة العامل لتشغيل البوت
+  - type: worker
+    name: referral-bot # اسم خدمة العامل
+    env: python
+    plan: free # أو خطة أخرى حسب الحاجة
+    buildCommand: pip install -r requirements.txt
+    # أمر بدء تشغيل البوت (سيقوم بتشغيل الحلقة الرئيسية تلقائياً)
+    startCommand: python referral_bot.py
+    # لا تحتاج خدمة العامل عادةً لمنفذ مفتوح ما لم تكن تستضيف واجهة معينة
+    # port: 10000 # ازل هذا السطر لخدمة العامل إذا لم تكن بحاجة لمنفذ
+
+    envVars:
+      # رابط الإحالة الذي سيستخدمه البوت
+      - key: REFERRAL_URL
+        value: https://gamersunivers.com/default.aspx?u=1206990 # ضع رابط الإحالة الخاص بك هنا
+      # - key: NAVIGATION_TIMEOUT # اختياري: إذا أردت تغيير المهلة من هنا
       #   value: 60000
+
